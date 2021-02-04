@@ -1,0 +1,3 @@
+secrets:
+  - {name: "wells fargo", username: "bill21", pasword: "asdf"}
+
