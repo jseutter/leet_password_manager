@@ -8,14 +8,14 @@ class Secrets:
     def __init__(self, path, keyphrase):
         self.path = path
         self.keyphrase = keyphrase
-        self.data = self.read()
+        self.data = None
 
     def read(self):
         vault = VaultLib([(DEFAULT_VAULT_ID_MATCH, VaultSecret(self.keyphrase.encode('utf-8')))])
         with open(self.path) as f:
             ciphered = f.read()
         cleartext = vault.decrypt(ciphered)
-        return yaml.safe_load(cleartext)
+        self.data = yaml.safe_load(cleartext)
 
     def write(self):
         cleartext = yaml.dump(self.data)
@@ -34,6 +34,12 @@ class Secrets:
 
     def entries(self):
         return self.data['entries']
+
+    def replace_entry(self, old, new):
+        entries = self.data['entries']
+        idx = entries.index(old)
+        entries[idx] = new
+        
 
 
 def main():

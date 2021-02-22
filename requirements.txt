@@ -1,2 +1,4 @@
 pyyaml
 ansible
+python-editor
+
