@@ -28,10 +28,16 @@ def menu():
     print()
     print('Actions: (f)ind, (l)ist, (q)uit, or an entry Id followed by (p), (u), (h)')
 
+def pbcopy_exists():
+    return shutil.which('pbcopy') != None
+
 def pbcopy(text):
     # https://stackoverflow.com/questions/1825692/can-python-send-text-to-the-mac-clipboard
-    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
-    process.communicate(text.encode('utf-8'))
+    if pbcopy_exists():
+        process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+        process.communicate(text.encode('utf-8'))
+    else:
+        print(text)
 
 def list_(s):
     (columns, lines) = shutil.get_terminal_size()
@@ -138,6 +144,15 @@ def edit_entry(s, id_):
     s.replace_entry(entry, updated_data)
     s.write()
 
+def view_entry(s, id_):
+    for e in s.entries():
+        if id_ == e['id']:
+            entry = e
+            break
+    else:
+        print('invalid entry')
+    print(e)
+
 def new_entry(s):
     pristine = {
         'title': '',
@@ -231,6 +246,8 @@ def interactive(s):
                 copy_url(s, id_)
             elif cmd == 'e':
                 edit_entry(s, id_)
+            elif cmd == 'v':
+                view_entry(s, id_)
         elif action == 'f':
             find(s)
 
